@@ -1,2 +1,32 @@
-# Defensive_Swarm_Behavior
-This is a compilation of work and research I performed over the summer of 2022. It features python code written to simulate defensive swarm behavior with the p5 processing library, as well as micropython code for controlling a miniature swarm of Maqueen Plus robots. 
+# Defensive Swarm Behavior
+This is a compilation of work and research I performed over the summer of 2022. It features Python code written to simulate defensive swarm behavior with the p5 processing library, as well as MicroPython code for controlling a miniature swarm of Maqueen Plus robots. 
+
+Much credit needs to be given to Rohola Zandie and his [Better Programming article](https://betterprogramming.pub/boids-simulating-birds-flock-behavior-in-python-9fff99375118) on how to simulate flocking behavior in  Python with boids. He does an incredible job of guiding the reader step by step on how to construct emergent behavior. 
+
+
+## Phase 1
+
+The first phase of this research dealt primarily with constructing a virtual simulation that could satisfactorily model a defensive swarm. The goal behavior of the swarm in question was determined by examining prior research performed on several species in nature that exhibit swarm behavior, and then further researching said species to determine which utilized their swarming behavior as a defensive mechanism. It was found that schools of fish and swarms of bees both utilize their swarm behavior defensively, but in different ways. Fish often school to make themselves appear larger to predators, thus warding off would be attackers. They do this by swarming in a fashion not unlike flocks of birds: by pereceiving how close they are to there neighbors and then steering so as to not collide with them, all while steering in the overall heading of their group.
+
+While a swarm of bees would could exhibit similarities to this flocking behavior, their uniqueness is found in the way a particular group of bees protects their queen when an attacker invades their hive. Specialized protector bees cover the invader, pressing their bodies againt it, and they proceed to beat their wings rapidly to generate heat and carbon monoxide. This behavior suffocates attackers and prevents them from posing a threat to the queen bee. 
+
+The virtual simulation drew from the defensive behavior of fish by implementing two of the three fundamental rules of the boid algorithm: Separation and Cohesion. Just like fish steer away from their immediate neighbors so as to not collide, it can be seen that the swarm agents in the simulation are repelled from the fellow protectors in their immediate vicinity. However, whereas boids are attracted to the average position of their neighbors, the agents in the simulation are instead attracted to a single target's location, their 'queen bee'. Depending on an individual agent's distance from the target, the agent will either move closer to or farther away from the target. The cohesive and repulsive behavior between the agents themselves and the target results in the agents dispersing and creating a perimeter around the target. 
+
+Where the virtual simulation draws on the defensive behavior of bees is seen in how they react to an attacker attempting to reach the target. If an attacker passes near a swarm agent, the agent will then prioritize the attacker over all other swarm rules (separation, cohesion, etc). This means that the agent will willingly come into contact fellow agents, or even move closer/farther to the target than it would typically be willing to, in order to fend off the attacker. At the moment, this 'fending off' behavior is very simple, and only involves pushing the attacker away from the target. However, the emergent behavior noticed with this algorithm was that several swarm agents will surround the attacker, corralling it, and therefore keeping it away from the target. The potential for having a single agent incapacitate an attacker is not missed by this algorithm, and it can be further refined to design a robust defensive system. In the end, the two dimensional defensive behavior that emerges from the above rules was deemed satisfactory, and it presennted a model to replicate in a physical simulation. 
+
+## Phase 2
+
+The second phase of this research was by far the most difficult and demanding. It was decided early on to utilize the [Maqueenn Plus](https://www.dfrobot.com/product-2026.html) programmable robot, the [micro:bit](https://www.adafruit.com/product/3362) microcontroller, a DFRobot [Husky Lens](https://www.dfrobot.com/product-1922.html), and a [HC-SR04 ultrasonic sensor](https://www.digikey.com/en/products/detail/adafruit-industries-llc/3942/9658069?utm_adgroup=Ultrasonic%20Receivers%2C%20Transmitters&utm_source=google&utm_medium=cpc&utm_campaign=Shopping_Product_Sensors%2C%20Transducers&utm_term=&utm_content=Ultrasonic%20Receivers%2C%20Transmitters&gclid=Cj0KCQjw_7KXBhCoARIsAPdPTfjBblb7MjGRXe6cdxfTLrw86d5XE1xKebulpCZT-P1ZhGtSivsUT_8aAh0iEALw_wcB) to construct the swarm agents. These materials were chosen due to their availability, open source documentation, and their low cost. 
+
+
+### Materials
+
+- The Maqueen Plus is a small, programmable robot with two wheels that is able to host several peripherals
+- The BBC micro:bit is a powerful microconroller that can be programmed in MicroPython
+- The Husky Lens is a camera with machine learning that can be utilized to perform countless AI tasks
+- The HC-SR04 is an ultrasonic sensor that can be utilized to measure distances up to 4 meters.
+
+
+The The goal of the physical demonstration was to see if the emergent behavior constructed in the virtual simulation could be accurately replicated by a combination of sensors, actuators, etc. 
+
+The primary issues that arose within this phase were the optimization of code, the communication protocols between sensors and the micro:bit, and the gains of utilized control systems. While the micro:bit is incredibly versatile, it lacks access to interrupts, so polling was utilized to check several peripherals (a fairly inefficient method that wastes CPU cycles). Not only this, but the micro:bit's version of MicroPython is a very condensed version of the typical MicroPython used on other boards. In particular, the micro:bit's version had fairly simple functions for I2C communication, which meant that the pre-constructed Python libraries for both the Maqueen Plus and Husky Lens had to be heavily altered to accomodate the MicroPython on the micro:bit. Finally, gain tuning for control systems can be very tedious, and often involves a lot of trial and error. For the attacker recognition and attacker tracking algorithm, a PID (Proportional Integral Derivative) controller was used. Much time was spent tuning the gains of this controller in order to create a stable and efficient system.
