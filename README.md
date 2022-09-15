@@ -22,7 +22,7 @@ The second phase of this research was by far the most difficult and demanding. I
 ### Materials
 
 - The Maqueen Plus is a small, programmable robot with two wheels that is able to host several peripherals
-- The BBC micro:bit is a powerful microconroller that can be programmed in MicroPython
+- The BBC micro:bit is a powerful microcontroller that can be programmed in MicroPython
 - The Husky Lens is a camera with machine learning that can be utilized to perform countless AI tasks
 - The HC-SR04 is an ultrasonic sensor that can be utilized to measure distances up to 4 meters.
 
